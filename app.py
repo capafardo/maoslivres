@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MÃOS LIVRES - JARVIS ASSIST TEA
+MÃOS LIVRES - cetam lab tea
 Servidor Web e API em Python para a Interface Holográfica de Apoio a Pessoas no Espectro Autista.
 
 Curso Técnico em Manutenção e Suporte em Informática / Laboratório de Apoio TEA.
@@ -36,7 +36,7 @@ CARDS_FILE = BASE_DIR / "cards.json"
 LOGS_FILE = BASE_DIR / "logs_sessao.json"
 
 app = FastAPI(
-    title="Mãos Livres - JARVIS Assist TEA",
+    title="cetam lab tea",
     description="Sistema de Interface Holográfica Touchless com Visão Computacional para Apoio a Alunos com TEA",
     version="1.0.0"
 )
@@ -171,7 +171,7 @@ async def get_reference_image():
 
 def run(host: str = "0.0.0.0", port: int = 8000, open_browser: bool = True):
     print("=" * 70)
-    print("🚀 MÃOS LIVRES - JARVIS ASSIST TEA (MVP)")
+    print("🚀 cetam lab tea (MVP)")
     print("   Laboratório de Informática / Acessibilidade Touchless")
     print(f"   Servidor rodando em: http://localhost:{port}")
     print(f"   Acesse na rede local em: http://0.0.0.0:{port}")
@@ -187,7 +187,7 @@ def run(host: str = "0.0.0.0", port: int = 8000, open_browser: bool = True):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="Executar servidor Mãos Livres - JARVIS Assist")
+    parser = argparse.ArgumentParser(description="Executar servidor cetam lab tea")
     parser.add_argument("--port", type=int, default=8000, help="Porta HTTP (padrão: 8000)")
     parser.add_argument("--no-browser", action="store_true", help="Não abrir o navegador automaticamente")
     args = parser.parse_args()

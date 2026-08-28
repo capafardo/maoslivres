@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Script para inicialização do Mãos Livres - JARVIS Assist TEA
+# Script para inicialização do cetam lab tea
 echo "=========================================================="
-echo "  🚀 INICIANDO MÃOS LIVRES // JARVIS ASSIST TEA (MVP)"
+echo "  🚀 INICIANDO CETAM LAB TEA (MVP)"
 echo "  Laboratório de Informática / Acessibilidade Touchless"
 echo "=========================================================="
 

@@ -1,8 +1,8 @@
-# ✦ Mãos Livres // JARVIS Assist TEA ✦
+# ✦ cetam lab tea ✦
 ### Interface Holográfica Touchless com Visão Computacional para Apoio a Pessoas no Espectro Autista
 
-> **Projeto MVP desenvolvido para o Curso Técnico em Manutenção e Suporte em Informática**  
-> Inspirado na estética HUD holográfica do JARVIS e no conceito de interação no ar (*Barehands* / MediaPipe).
+> **Projeto MVP desenvolvido para o Curso Técnico em Manutenção e Suporte em Informática - CETAM**  
+> Interface espacial nos 4 quadrantes para acessibilidade (*Barehands* / MediaPipe).
 
 ---
 
