@@ -527,6 +527,132 @@
             margin-top: 8px;
         }
 
+        /* 6.5 Terminal Holográfico Central de Logs (Estilo JARVIS / Green Monospace) */
+        .center-hud-terminal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 380px;
+            max-width: 32vw;
+            height: 70vh;
+            background: rgba(2, 6, 12, 0.42);
+            border: 1px solid rgba(0, 255, 170, 0.25);
+            border-radius: 14px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 255, 170, 0.04);
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            pointer-events: none;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            opacity: 1;
+        }
+
+        .center-hud-terminal.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        .terminal-header {
+            padding: 8px 14px;
+            background: linear-gradient(90deg, rgba(0, 255, 170, 0.15), transparent);
+            border-bottom: 1px solid rgba(0, 255, 170, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: #00ffaa;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(0, 255, 170, 0.5);
+            flex-shrink: 0;
+        }
+
+        .terminal-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: bold;
+        }
+
+        .terminal-cursor-blink {
+            display: inline-block;
+            width: 6px;
+            height: 12px;
+            background: #00ffaa;
+            animation: term-blink 1s steps(2, start) infinite;
+        }
+
+        @keyframes term-blink {
+            to { visibility: hidden; }
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 10px 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* Mensagens mais recentes aparecem no topo */
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: #00ffaa;
+            line-height: 1.35;
+            text-shadow: 0 0 6px rgba(0, 255, 170, 0.4);
+            scrollbar-width: none;
+        }
+
+        .terminal-body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .term-entry {
+            padding: 5px 8px;
+            border-left: 2px solid rgba(0, 255, 170, 0.5);
+            background: rgba(0, 255, 170, 0.04);
+            border-radius: 2px 5px 5px 2px;
+            animation: term-fade-in 0.25s ease;
+            word-break: break-word;
+        }
+
+        .term-entry .term-time {
+            color: #55e6a5;
+            opacity: 0.85;
+            margin-right: 6px;
+        }
+
+        .term-entry .term-cat {
+            color: #88c9df;
+            font-size: 0.65rem;
+            padding: 1px 4px;
+            border-radius: 3px;
+            background: rgba(0, 240, 255, 0.12);
+            margin-right: 4px;
+        }
+
+        .term-entry .term-label {
+            color: #ffffff;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 255, 170, 0.7);
+        }
+
+        .term-entry .term-msg {
+            display: block;
+            color: #bbf7d0;
+            font-size: 0.70rem;
+            margin-top: 2px;
+            opacity: 0.95;
+        }
+
+        @keyframes term-fade-in {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* 7. Gaveta de Controle do Profissional / Psicólogo (Slide-out Drawer) */
         .drawer-overlay {
             position: fixed;
@@ -892,6 +1018,25 @@
         <div class="deck-grid" id="gridCalmaria"></div>
     </div>
 
+    <!-- 4.5 Terminal Holográfico Central de Logs (Estilo JARVIS) -->
+    <div class="center-hud-terminal" id="centerHudTerminal">
+        <div class="terminal-header">
+            <div class="terminal-title">
+                <span class="terminal-cursor-blink"></span>
+                <span>STREAM DE MANIFESTAÇÕES & LOGS</span>
+            </div>
+            <span style="font-size: 0.65rem; opacity: 0.8;">[SYS.LOG]</span>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+            <div class="term-entry" style="border-left-color: #00f0ff;">
+                <span class="term-time">00:00:00</span>
+                <span class="term-cat">SISTEMA</span>
+                <span class="term-label">TOUCHLESS ONLINE</span>
+                <span class="term-msg">Interface espacial inicializada. Aguardando interação.</span>
+            </div>
+        </div>
+    </div>
+
     <!-- 5. Banner de Confirmação e Fala Centralizado -->
     <div class="confirmation-banner" id="confirmBanner">
         <div class="confirm-icon" id="confirmIcon">💬</div>
@@ -985,7 +1130,17 @@
             </div>
 
             <div class="drawer-section">
-                <h3>Histórico da Sessão</h3>
+                <div class="toggle-container" style="margin-bottom: 8px;">
+                    <h3 style="margin-bottom: 0;">HISTÓRICO DA SESSÃO</h3>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="chkShowHudLog" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-family: var(--font-mono); font-size: 0.72rem;">
+                    <span style="color: #b0e5f5;">Terminal no HUD Central:</span>
+                    <span id="lblHudLogStatus" style="color: #00ffaa; font-weight: bold;">EXIBINDO</span>
+                </div>
                 <div class="log-list" id="sessionLogList">
                     <div style="color: #668899; text-align: center; padding: 10px;">Nenhum evento registrado ainda.</div>
                 </div>
@@ -1021,7 +1176,8 @@
             deckOpacity: 0.75,
             deckBlur: 16,
             ecoMode: false,
-            deckSize: 'standard'
+            deckSize: 'standard',
+            showHudLog: true
         };
 
         // DADOS PADRÃO (Caso esteja rodando sem backend)
@@ -1238,6 +1394,8 @@
 
         function adicionarLogVisual(log) {
             State.sessionLogs.unshift(log);
+            
+            // 1. Atualiza lista na gaveta do profissional (inalterada)
             const list = document.getElementById('sessionLogList');
             if (State.sessionLogs.length === 1) list.innerHTML = '';
             
@@ -1248,6 +1406,20 @@
                 <span style="color:#88c9df;">${log.timestamp}</span>
             `;
             list.prepend(item);
+
+            // 2. Atualiza o Terminal Holográfico Central no HUD (Verde JARVIS / Monospace)
+            const terminal = document.getElementById('terminalBody');
+            if (terminal) {
+                const entry = document.createElement('div');
+                entry.className = 'term-entry';
+                entry.innerHTML = `
+                    <span class="term-time">${log.timestamp}</span>
+                    <span class="term-cat">${(log.categoria || 'GERAL').toUpperCase()}</span>
+                    <span class="term-label">${log.icone} ${log.label}</span>
+                    <span class="term-msg">"${log.texto}"</span>
+                `;
+                terminal.prepend(entry);
+            }
         }
 
         // =========================================================================
@@ -1604,6 +1776,7 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'p' || e.key === 'P') toggleDrawer();
+            if (e.key === 'l' || e.key === 'L') aplicarVisibilidadeHudLog(!State.showHudLog);
             if (e.key === 'Escape') {
                 drawerPanel.classList.remove('open');
                 breathModal.classList.remove('active');
@@ -1688,6 +1861,28 @@
         document.getElementById('btnSizeStandard').onclick = () => aplicarTamanhoDeck('standard');
         document.getElementById('btnSizeLarge').onclick = () => aplicarTamanhoDeck('large');
 
+        // Visibilidade do Terminal de Logs no HUD Central
+        function aplicarVisibilidadeHudLog(visible) {
+            State.showHudLog = visible;
+            const term = document.getElementById('centerHudTerminal');
+            if (term) term.classList.toggle('hidden', !visible);
+
+            const chk = document.getElementById('chkShowHudLog');
+            if (chk) chk.checked = visible;
+
+            const lbl = document.getElementById('lblHudLogStatus');
+            if (lbl) {
+                lbl.textContent = visible ? "EXIBINDO" : "OCULTO";
+                lbl.style.color = visible ? "#00ffaa" : "#888";
+            }
+
+            localStorage.setItem('cetam_hud_log_visible', visible);
+        }
+
+        document.getElementById('chkShowHudLog').onchange = (e) => {
+            aplicarVisibilidadeHudLog(e.target.checked);
+        };
+
         document.getElementById('sliderPinch').oninput = (e) => {
             State.pinchThreshold = parseFloat(e.target.value);
             document.getElementById('lblPinch').textContent = State.pinchThreshold > 0.06 ? 'Fácil' : (State.pinchThreshold < 0.04 ? 'Firme' : 'Médio');
@@ -1710,6 +1905,18 @@
         document.getElementById('btnClearLogs').onclick = () => {
             State.sessionLogs = [];
             document.getElementById('sessionLogList').innerHTML = '<div style="color: #668899; text-align: center; padding: 10px;">Histórico limpo.</div>';
+            
+            const terminal = document.getElementById('terminalBody');
+            if (terminal) {
+                terminal.innerHTML = `
+                    <div class="term-entry" style="border-left-color: #00f0ff;">
+                        <span class="term-time">${new Date().toLocaleTimeString('pt-BR')}</span>
+                        <span class="term-cat">SISTEMA</span>
+                        <span class="term-label">HISTÓRICO REINICIADO</span>
+                        <span class="term-msg">Histórico de manifestações limpo pelo profissional.</span>
+                    </div>
+                `;
+            }
             fetch('/api/logs', { method: 'DELETE' }).catch(()=>{});
         };
 
@@ -1738,6 +1945,13 @@
                 State.deckSize = savedSize;
             }
             aplicarTamanhoDeck(State.deckSize);
+
+            // Restaura Visibilidade do Terminal HUD
+            const savedHudLog = localStorage.getItem('cetam_hud_log_visible');
+            if (savedHudLog !== null) {
+                State.showHudLog = savedHudLog === 'true';
+            }
+            aplicarVisibilidadeHudLog(State.showHudLog);
 
             // Restaura Opacidade e Blur
             const savedOpacity = localStorage.getItem('jarvis_deck_opacity');
