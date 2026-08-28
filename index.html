@@ -24,7 +24,10 @@
             --primary-amber-glow: rgba(255, 183, 0, 0.4);
             --primary-purple: #c084fc;
             --primary-purple-glow: rgba(192, 132, 252, 0.4);
-            --bg-glass: rgba(5, 16, 28, 0.75);
+            --deck-bg-opacity: 0.75;
+            --deck-card-opacity: 0.70;
+            --deck-blur: 16px;
+            --bg-glass: rgba(5, 16, 28, var(--deck-bg-opacity));
             --border-glass: rgba(0, 240, 255, 0.3);
             --font-hud: 'Orbitron', 'Rajdhani', sans-serif;
             --font-ui: 'Rajdhani', sans-serif;
@@ -218,9 +221,9 @@
             position: absolute;
             width: 390px;
             max-width: calc(48vw - 20px);
-            background: var(--bg-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(5, 16, 28, var(--deck-bg-opacity));
+            backdrop-filter: blur(var(--deck-blur));
+            -webkit-backdrop-filter: blur(var(--deck-blur));
             border: 1px solid var(--border-glass);
             border-radius: 16px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 
@@ -230,7 +233,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.2s, backdrop-filter 0.2s;
         }
 
         .holo-deck.is-dragged {
@@ -344,7 +347,7 @@
         }
 
         .holo-card {
-            background: rgba(8, 24, 44, 0.7);
+            background: rgba(8, 24, 44, var(--deck-card-opacity));
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 10px;
             padding: 10px 12px;
@@ -774,6 +777,21 @@
             </div>
 
             <div class="drawer-section">
+                <h3>Aparência & Opacidade (Sensorial)</h3>
+                <div class="slider-row">
+                    <label><span>Opacidade dos Decks / Janelas:</span> <span id="lblOpacity">75%</span></label>
+                    <input type="range" id="sliderOpacity" min="0.08" max="0.98" step="0.02" value="0.75">
+                </div>
+                <div class="slider-row">
+                    <label><span>Desfoque de Fundo (Blur):</span> <span id="lblBlur">16px</span></label>
+                    <input type="range" id="sliderBlur" min="0" max="30" step="2" value="16">
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 0.70rem; color: #88c9df; margin-top: 4px;">
+                    ✦ Reduza para maior transparência AR ou aumente para maior contraste visual.
+                </div>
+            </div>
+
+            <div class="drawer-section">
                 <h3>Voz & Som (Síntese)</h3>
                 <div class="slider-row">
                     <label><span>Volume da Voz do Aluno:</span> <span id="lblVol">100%</span></label>
@@ -817,7 +835,9 @@
             sessionLogs: [],
             fps: 60,
             lastFrameTime: performance.now(),
-            speechVolume: 1.0
+            speechVolume: 1.0,
+            deckOpacity: 0.75,
+            deckBlur: 16
         };
 
         // DADOS PADRÃO (Caso esteja rodando sem backend)
@@ -1377,6 +1397,28 @@
         });
 
         // Controles do Profissional
+        function aplicarOpacidade(opacity, blur) {
+            document.documentElement.style.setProperty('--deck-bg-opacity', opacity);
+            document.documentElement.style.setProperty('--deck-card-opacity', Math.min(0.95, opacity * 0.92));
+            document.documentElement.style.setProperty('--deck-blur', `${blur}px`);
+        }
+
+        document.getElementById('sliderOpacity').oninput = (e) => {
+            const val = parseFloat(e.target.value);
+            State.deckOpacity = val;
+            aplicarOpacidade(State.deckOpacity, State.deckBlur);
+            document.getElementById('lblOpacity').textContent = `${Math.round(val * 100)}%`;
+            localStorage.setItem('jarvis_deck_opacity', val);
+        };
+
+        document.getElementById('sliderBlur').oninput = (e) => {
+            const val = parseInt(e.target.value);
+            State.deckBlur = val;
+            aplicarOpacidade(State.deckOpacity, State.deckBlur);
+            document.getElementById('lblBlur').textContent = `${val}px`;
+            localStorage.setItem('jarvis_deck_blur', val);
+        };
+
         document.getElementById('sliderPinch').oninput = (e) => {
             State.pinchThreshold = parseFloat(e.target.value);
             document.getElementById('lblPinch').textContent = State.pinchThreshold > 0.06 ? 'Fácil' : (State.pinchThreshold < 0.04 ? 'Firme' : 'Médio');
@@ -1412,7 +1454,30 @@
             downloadAnchor.remove();
         };
 
-        // Inicialização
+        // Inicialização com restauração de configurações salvas
+        function inicializarPreferencias() {
+            const savedOpacity = localStorage.getItem('jarvis_deck_opacity');
+            if (savedOpacity !== null) {
+                State.deckOpacity = parseFloat(savedOpacity);
+                const slider = document.getElementById('sliderOpacity');
+                if (slider) slider.value = State.deckOpacity;
+                const lbl = document.getElementById('lblOpacity');
+                if (lbl) lbl.textContent = `${Math.round(State.deckOpacity * 100)}%`;
+            }
+
+            const savedBlur = localStorage.getItem('jarvis_deck_blur');
+            if (savedBlur !== null) {
+                State.deckBlur = parseInt(savedBlur);
+                const slider = document.getElementById('sliderBlur');
+                if (slider) slider.value = State.deckBlur;
+                const lbl = document.getElementById('lblBlur');
+                if (lbl) lbl.textContent = `${State.deckBlur}px`;
+            }
+
+            aplicarOpacidade(State.deckOpacity, State.deckBlur);
+        }
+
+        inicializarPreferencias();
         carregarDados();
     </script>
 </body>
