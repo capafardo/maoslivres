@@ -624,6 +624,75 @@
             justify-content: space-between;
         }
 
+        /* Estilo do Interruptor Toggle */
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #ffffff;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: rgba(0, 255, 170, 0.4);
+            border-color: #00ffaa;
+            box-shadow: 0 0 10px rgba(0, 255, 170, 0.4);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+            background-color: #00ffaa;
+            box-shadow: 0 0 8px #00ffaa;
+        }
+
+        /* Otimizações Ativas no Modo Eco */
+        body.eco-mode-active .scanline-beam {
+            display: none !important;
+        }
+
+        body.eco-mode-active .ar-grid-overlay {
+            background-size: 80px 80px, 80px 80px, 100% 100% !important;
+        }
+
+        body.eco-mode-active .holo-deck {
+            backdrop-filter: blur(2px) !important;
+            -webkit-backdrop-filter: blur(2px) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7) !important;
+        }
+
         /* 8. Responsividade */
         @media (max-width: 860px) {
             .holo-deck {
@@ -661,6 +730,7 @@
         </div>
 
         <div class="center-telemetry-pill">
+            <div class="tele-stat"><span>MODO:</span> <span class="tele-val" id="telemetryMode" style="color: var(--primary-cyan);">FULL</span></div>
             <div class="tele-stat"><span>GESTO:</span> <span class="tele-val" id="telemetryGesture">SEM MÃO</span></div>
             <div class="tele-stat"><span>PRECISÃO:</span> <span class="tele-val" id="telemetryConfidence">0%</span></div>
             <div class="tele-stat"><span>FPS:</span> <span class="tele-val" id="telemetryFPS">60</span></div>
@@ -766,6 +836,22 @@
             <button class="hud-btn" id="btnCloseDrawer">✕ FECHAR</button>
         </div>
         <div class="drawer-content">
+            <div class="drawer-section" style="border-color: rgba(0, 255, 170, 0.4); background: rgba(0, 255, 170, 0.05);">
+                <div class="toggle-container" style="margin-bottom: 8px;">
+                    <h3 style="color: #00ffaa; margin-bottom: 0;">MODO ECO (COMPUTADORES BÁSICOS)</h3>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="chkEcoMode">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <p style="font-size: 0.74rem; color: #b0e5f5; line-height: 1.35;">
+                    Ative em computadores com menor poder de processamento (i3/Celeron/gráficos integrados). Usa o modelo <b>MediaPipe Lite</b>, otimiza o pipeline de IA e desativa sombras pesadas de GPU para garantir 60 FPS fluidos.
+                </p>
+                <div id="ecoModeBadge" style="margin-top: 8px; font-family: var(--font-mono); font-size: 0.72rem; color: #88c9df;">
+                    ● Modo Atual: FULL (Alta Fidelidade)
+                </div>
+            </div>
+
             <div class="drawer-section">
                 <h3>Sensibilidade dos Gestos</h3>
                 <div class="slider-row">
@@ -838,7 +924,8 @@
             lastFrameTime: performance.now(),
             speechVolume: 1.0,
             deckOpacity: 0.75,
-            deckBlur: 16
+            deckBlur: 16,
+            ecoMode: false
         };
 
         // DADOS PADRÃO (Caso esteja rodando sem backend)
@@ -1160,9 +1247,14 @@
             const h = canvasElement.height;
 
             canvasCtx.lineWidth = 2;
-            canvasCtx.strokeStyle = isPinching ? 'rgba(0, 255, 170, 0.7)' : 'rgba(0, 240, 255, 0.4)';
-            canvasCtx.shadowColor = isPinching ? '#00ffaa' : '#00f0ff';
-            canvasCtx.shadowBlur = 10;
+            canvasCtx.strokeStyle = isPinching ? 'rgba(0, 255, 170, 0.85)' : 'rgba(0, 240, 255, 0.7)';
+            
+            if (!State.ecoMode) {
+                canvasCtx.shadowColor = isPinching ? '#00ffaa' : '#00f0ff';
+                canvasCtx.shadowBlur = 10;
+            } else {
+                canvasCtx.shadowBlur = 0;
+            }
 
             for (const [i, j] of HAND_CONNECTIONS) {
                 const p1 = landmarks[i];
@@ -1177,11 +1269,11 @@
                 const px = (1 - p.x) * w;
                 const py = p.y * h;
                 const isFingertip = [4, 8, 12, 16, 20].includes(idx);
-                const radius = isFingertip ? 5 : 3;
+                const radius = isFingertip ? (State.ecoMode ? 4 : 5) : (State.ecoMode ? 2 : 3);
 
                 canvasCtx.beginPath();
                 canvasCtx.arc(px, py, radius, 0, Math.PI * 2);
-                canvasCtx.fillStyle = isFingertip ? (isPinching ? '#00ffaa' : '#ffffff') : 'rgba(0, 240, 255, 0.8)';
+                canvasCtx.fillStyle = isFingertip ? (isPinching ? '#00ffaa' : '#ffffff') : 'rgba(0, 240, 255, 0.85)';
                 canvasCtx.fill();
             });
 
@@ -1203,8 +1295,12 @@
 
         function desenharCursorHolografico(x, y, isPinching) {
             canvasCtx.save();
-            canvasCtx.shadowColor = isPinching ? '#00ffaa' : '#00f0ff';
-            canvasCtx.shadowBlur = 15;
+            if (!State.ecoMode) {
+                canvasCtx.shadowColor = isPinching ? '#00ffaa' : '#00f0ff';
+                canvasCtx.shadowBlur = 15;
+            } else {
+                canvasCtx.shadowBlur = 0;
+            }
 
             // Retícula circular externa
             canvasCtx.strokeStyle = isPinching ? '#00ffaa' : '#00f0ff';
@@ -1302,9 +1398,28 @@
 
         hands.onResults(onResults);
 
+        let frameCounter = 0;
+        let isProcessingFrame = false;
+
         const camera = new Camera(videoElement, {
             onFrame: async () => {
-                await hands.send({ image: videoElement });
+                if (!State.trackingEnabled) return;
+                frameCounter++;
+
+                // No modo ECO, processa inferência de IA em frames alternados (corta carga de CPU/GPU pela metade)
+                if (State.ecoMode && (frameCounter % 2 !== 0)) {
+                    return;
+                }
+
+                if (isProcessingFrame) return; // Evita sobrecarga de fila em CPUs mais lentas
+                isProcessingFrame = true;
+                try {
+                    await hands.send({ image: videoElement });
+                } catch(e) {
+                    console.warn("Erro no pipeline MediaPipe:", e);
+                } finally {
+                    isProcessingFrame = false;
+                }
             },
             width: 1280,
             height: 720
@@ -1398,6 +1513,42 @@
         });
 
         // Controles do Profissional
+        function aplicarModoEco(ativo) {
+            State.ecoMode = ativo;
+            document.body.classList.toggle('eco-mode-active', State.ecoMode);
+
+            // Reconfigura o modelo MediaPipe Hands dinamicamente
+            hands.setOptions({
+                maxNumHands: 1,
+                modelComplexity: State.ecoMode ? 0 : 1, // 0 = Lite (Rápido), 1 = Full (Alta Precisão)
+                minDetectionConfidence: State.ecoMode ? 0.5 : 0.6,
+                minTrackingConfidence: State.ecoMode ? 0.5 : 0.6
+            });
+
+            // Atualiza indicador na Topbar
+            const badgeTele = document.getElementById('telemetryMode');
+            if (badgeTele) {
+                badgeTele.textContent = State.ecoMode ? "ECO" : "FULL";
+                badgeTele.style.color = State.ecoMode ? "#00ffaa" : "var(--primary-cyan)";
+            }
+
+            // Atualiza indicador no Painel
+            const badgePanel = document.getElementById('ecoModeBadge');
+            if (badgePanel) {
+                badgePanel.textContent = State.ecoMode ? "● Modo Atual: ECO (MediaPipe Lite + GPU Otimizada)" : "● Modo Atual: FULL (MediaPipe 3D Mesh Completo)";
+                badgePanel.style.color = State.ecoMode ? "#00ffaa" : "#88c9df";
+            }
+
+            const chk = document.getElementById('chkEcoMode');
+            if (chk) chk.checked = State.ecoMode;
+
+            localStorage.setItem('cetam_eco_mode', State.ecoMode);
+        }
+
+        document.getElementById('chkEcoMode').onchange = (e) => {
+            aplicarModoEco(e.target.checked);
+        };
+
         function aplicarOpacidade(opacity, blur) {
             document.documentElement.style.setProperty('--deck-bg-opacity', opacity);
             document.documentElement.style.setProperty('--deck-card-opacity', Math.min(0.95, opacity * 0.92));
@@ -1457,6 +1608,14 @@
 
         // Inicialização com restauração de configurações salvas
         function inicializarPreferencias() {
+            // Restaura Modo Eco
+            const savedEco = localStorage.getItem('cetam_eco_mode');
+            if (savedEco !== null) {
+                State.ecoMode = savedEco === 'true';
+            }
+            aplicarModoEco(State.ecoMode);
+
+            // Restaura Opacidade e Blur
             const savedOpacity = localStorage.getItem('jarvis_deck_opacity');
             if (savedOpacity !== null) {
                 State.deckOpacity = parseFloat(savedOpacity);
