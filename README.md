@@ -10,11 +10,12 @@
 
 Este projeto é um **Laboratório de Interação Sem Toque (Touchless)** projetado para ser operado por um profissional de psicologia/saúde no acolhimento de pessoas com Transtorno do Espectro Autista (TEA) e outras neurodivergências.
 
-A aplicação captura a imagem da webcam e a exibe em **tela cheia em modo espelho (Realidade Aumentada)**, sobrepondo **cartões e anéis holográficos móveis** flutuantes. O usuário pode interagir diretamente no ar usando as próprias mãos:
-1. **Mirar (Hover):** Posiciona a mira holográfica neon sobre o cartão desejado.
-2. **Gesto de Pinça (Pinch com Polegar e Indicador):** Aciona o cartão para falar a frase em voz alta (*Web Speech API*) ou segura a barra superior para arrastar a janela holográfica pela tela.
-3. **Módulo de Calmaria:** Exercício holográfico de respiração guiada 4-4-4 para redução de ansiedade e sobrecarga sensorial.
-4. **Painel do Profissional (Tecla `[P]`):** Ajuste de sensibilidade da pinça, personalização de cartões e exportação do relatório da sessão.
+A aplicação captura a imagem da webcam e a exibe em **tela cheia em modo espelho (Realidade Aumentada)**, distribuindo simultaneamente **4 Decks Holográficos nos 4 cantos da tela**, garantindo autonomia total para a pessoa no espectro autista sem depender de abas ou mouse:
+* 🧘 **Canto Superior Esquerdo:** Sensorial & Conforto (Verde/Ciano)
+* 💧 **Canto Inferior Esquerdo:** Necessidades Básicas (Esmeralda)
+* ⚡ **Canto Superior Direito:** Expressão Rápida (Âmbar)
+* 🌀 **Canto Inferior Direito:** Calmaria & Apoio (Púrpura / Respiração 4-4-4)
+* 🎯 **Centro da Tela:** Livre para o reflexo do usuário, com mira holográfica e telemetria em tempo real.
 
 ---
 
