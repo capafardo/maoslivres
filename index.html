@@ -693,10 +693,90 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7) !important;
         }
 
+        /* Modo Ampliado (+40% Maior / Baixa Visão / Acessibilidade) */
+        body.deck-size-large .holo-deck {
+            width: 510px;
+            max-width: calc(48vw - 15px);
+        }
+
+        body.deck-size-large .deck-header {
+            padding: 12px 18px;
+        }
+
+        body.deck-size-large .deck-title {
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+        }
+
+        body.deck-size-large .deck-tag {
+            font-size: 0.76rem;
+            padding: 3px 8px;
+        }
+
+        body.deck-size-large .deck-grid {
+            gap: 10px;
+            padding: 12px;
+        }
+
+        body.deck-size-large .holo-card {
+            min-height: 98px;
+            padding: 12px 16px;
+            border-radius: 12px;
+        }
+
+        body.deck-size-large .card-emoji {
+            font-size: 1.85rem;
+        }
+
+        body.deck-size-large .card-title {
+            font-size: 1.05rem;
+        }
+
+        body.deck-size-large .card-description {
+            font-size: 0.86rem;
+            margin-top: 5px;
+            line-height: 1.25;
+        }
+
+        /* Botões Seletores de Tamanho */
+        .btn-size-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-size-opt {
+            flex: 1;
+            justify-content: center;
+            font-family: var(--font-hud);
+            font-size: 0.76rem;
+            letter-spacing: 1px;
+            padding: 8px 10px;
+            border: 1px solid var(--border-glass);
+            background: rgba(4, 16, 28, 0.85);
+            color: #88c9df;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-size-opt:hover {
+            background: rgba(0, 240, 255, 0.15);
+            color: #fff;
+        }
+
+        .btn-size-opt.active {
+            background: rgba(0, 240, 255, 0.25);
+            border-color: var(--primary-cyan);
+            color: #ffffff;
+            box-shadow: 0 0 15px var(--primary-cyan-glow);
+            font-weight: bold;
+        }
+
         /* 8. Responsividade */
         @media (max-width: 860px) {
             .holo-deck {
-                width: calc(50vw - 15px);
+                width: calc(50vw - 15px) !important;
             }
             .deck-grid {
                 grid-template-columns: 1fr;
@@ -879,6 +959,21 @@
             </div>
 
             <div class="drawer-section">
+                <h3>Tamanho dos Cartões (Acessibilidade Visual)</h3>
+                <div class="btn-size-group">
+                    <button class="btn-size-opt active" id="btnSizeStandard">
+                        PADRÃO (100%)
+                    </button>
+                    <button class="btn-size-opt" id="btnSizeLarge">
+                        AMPLIADO (+40%)
+                    </button>
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 0.70rem; color: #88c9df; margin-top: 6px;">
+                    ✦ O modo ampliado aumenta fontes, ícones e alvos em ~40% para pessoas com baixa visão.
+                </div>
+            </div>
+
+            <div class="drawer-section">
                 <h3>Voz & Som (Síntese)</h3>
                 <div class="slider-row">
                     <label><span>Volume da Voz do Aluno:</span> <span id="lblVol">100%</span></label>
@@ -925,7 +1020,8 @@
             speechVolume: 1.0,
             deckOpacity: 0.75,
             deckBlur: 16,
-            ecoMode: false
+            ecoMode: false,
+            deckSize: 'standard'
         };
 
         // DADOS PADRÃO (Caso esteja rodando sem backend)
@@ -1573,6 +1669,25 @@
             localStorage.setItem('jarvis_deck_blur', val);
         };
 
+        // Acessibilidade: Tamanho dos Decks (Padrão vs Ampliado +40%)
+        function aplicarTamanhoDeck(size) {
+            State.deckSize = size;
+            const isLarge = size === 'large';
+            document.body.classList.toggle('deck-size-large', isLarge);
+
+            const btnStd = document.getElementById('btnSizeStandard');
+            const btnLrg = document.getElementById('btnSizeLarge');
+            if (btnStd && btnLrg) {
+                btnStd.classList.toggle('active', !isLarge);
+                btnLrg.classList.toggle('active', isLarge);
+            }
+
+            localStorage.setItem('cetam_deck_size', size);
+        }
+
+        document.getElementById('btnSizeStandard').onclick = () => aplicarTamanhoDeck('standard');
+        document.getElementById('btnSizeLarge').onclick = () => aplicarTamanhoDeck('large');
+
         document.getElementById('sliderPinch').oninput = (e) => {
             State.pinchThreshold = parseFloat(e.target.value);
             document.getElementById('lblPinch').textContent = State.pinchThreshold > 0.06 ? 'Fácil' : (State.pinchThreshold < 0.04 ? 'Firme' : 'Médio');
@@ -1616,6 +1731,13 @@
                 State.ecoMode = savedEco === 'true';
             }
             aplicarModoEco(State.ecoMode);
+
+            // Restaura Tamanho dos Decks
+            const savedSize = localStorage.getItem('cetam_deck_size');
+            if (savedSize !== null) {
+                State.deckSize = savedSize;
+            }
+            aplicarTamanhoDeck(State.deckSize);
 
             // Restaura Opacidade e Blur
             const savedOpacity = localStorage.getItem('jarvis_deck_opacity');
