@@ -22,16 +22,12 @@ try:
     from pydantic import BaseModel
     import uvicorn
 except ImportError:
-    print("FastAPI / Uvicorn não encontrados. Instalando ou utilizando servidor fallback...")
-    os.system("python3 -m pip install fastapi uvicorn")
-    from fastapi import FastAPI, HTTPException, Request
-    from fastapi.staticfiles import StaticFiles
-    from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
-    from fastapi.middleware.cors import CORSMiddleware
-    from pydantic import BaseModel
-    import uvicorn
+    print("FastAPI / Uvicorn não encontrados. Por favor instale: pip install fastapi uvicorn")
+    raise
 
 BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
+STATIC_DIR.mkdir(exist_ok=True)
 CARDS_FILE = BASE_DIR / "cards.json"
 LOGS_FILE = BASE_DIR / "logs_sessao.json"
 
@@ -49,6 +45,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
 # Modelos de Dados
 class LogEvent(BaseModel):
     card_id: Optional[str] = "custom"
@@ -57,6 +55,7 @@ class LogEvent(BaseModel):
     categoria: Optional[str] = "Geral"
     tipo: Optional[str] = "neutro"
     icone: Optional[str] = "💬"
+    pictograma: Optional[str] = None
     timestamp: Optional[str] = None
     origem: Optional[str] = "gesto_mao"
 
@@ -66,12 +65,16 @@ class CardItem(BaseModel):
     texto: str
     tipo: str = "neutro"
     icone: str = "💬"
+    cor_custom: Optional[str] = None
+    pictograma: Optional[str] = None
+    arasaac_id: Optional[str] = None
 
 class CategoryItem(BaseModel):
     id: str
     nome: str
     icone: str
     cor: str
+    posicao: Optional[str] = None
     cards: List[CardItem]
 
 class CardsPayload(BaseModel):
@@ -124,7 +127,7 @@ async def get_index():
     index_file = BASE_DIR / "index.html"
     if not index_file.exists():
         raise HTTPException(status_code=404, detail="index.html não encontrado")
-    return FileResponse(index_file)
+    return FileResponse(index_file, headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache"})
 
 @app.get("/api/cards")
 async def get_cards():
@@ -134,20 +137,22 @@ async def get_cards():
 @app.post("/api/cards")
 async def update_cards(payload: CardsPayload):
     """Atualiza a lista de cartões (permitindo ao psicólogo/profissional personalizar)."""
-    data = payload.dict()
+    data = payload.model_dump() if hasattr(payload, "model_dump") else payload.dict()
     save_cards(data)
     return {"status": "success", "message": "Cartões atualizados com sucesso"}
 
 @app.get("/api/logs")
+@app.get("/api/log")
 async def get_logs():
     """Retorna o histórico de manifestações e interações da sessão."""
     return load_logs()
 
 @app.post("/api/logs")
+@app.post("/api/log")
 async def add_log(event: LogEvent):
     """Registra uma nova interação do usuário (via gesto ou clique)."""
     logs = load_logs()
-    event_dict = event.dict()
+    event_dict = event.model_dump() if hasattr(event, "model_dump") else event.dict()
     if not event_dict.get("timestamp"):
         event_dict["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     logs.append(event_dict)

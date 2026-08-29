@@ -6,4 +6,5 @@ __pycache__/
 logs_sessao.json
 .venv/
 venv/
-
+uso-interno/
+uso-interno

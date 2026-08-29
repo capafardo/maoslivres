@@ -7,10 +7,10 @@
       "cor": "#00f0ff",
       "posicao": "top-left",
       "cards": [
-        { "id": "s1", "label": "Estou Confortável", "texto": "Estou me sentindo confortável e bem no ambiente.", "tipo": "sucesso", "icone": "🟢", "cor_custom": "#00ffaa" },
-        { "id": "s2", "label": "Muito Barulho", "texto": "O ambiente está muito barulhento, preciso de menos ruído.", "tipo": "alerta", "icone": "🔊", "cor_custom": "#00f0ff" },
-        { "id": "s3", "label": "Muita Luz", "texto": "A iluminação está forte para mim, peço para diminuir a luz.", "tipo": "alerta", "icone": "💡", "cor_custom": "#00f0ff" },
-        { "id": "s4", "label": "Preciso de Pausa", "texto": "Estou sobrecarregado, necessito de um momento de pausa.", "tipo": "urgente", "icone": "🛑", "cor_custom": "#ff3366" }
+        { "id": "s1", "label": "Estou Confortável", "texto": "Estou me sentindo confortável e bem no ambiente.", "tipo": "sucesso", "icone": "🟢", "cor_custom": "#00ffaa", "pictograma": "static/pictograms/s1_confortavel.png", "arasaac_id": "31310" },
+        { "id": "s2", "label": "Muito Barulho", "texto": "O ambiente está muito barulhento, preciso de menos ruído.", "tipo": "alerta", "icone": "🔊", "cor_custom": "#00f0ff", "pictograma": "static/pictograms/s2_barulho.png", "arasaac_id": "39871" },
+        { "id": "s3", "label": "Muita Luz", "texto": "A iluminação está forte para mim, peço para diminuir a luz.", "tipo": "alerta", "icone": "💡", "cor_custom": "#00f0ff", "pictograma": "static/pictograms/s3_muitaluz.png", "arasaac_id": "8619" },
+        { "id": "s4", "label": "Preciso de Pausa", "texto": "Estou sobrecarregado, necessito de um momento de pausa.", "tipo": "urgente", "icone": "🛑", "cor_custom": "#ff3366", "pictograma": "static/pictograms/s4_pausa.png", "arasaac_id": "7196" }
       ]
     },
     {
@@ -20,10 +20,10 @@
       "cor": "#00ffaa",
       "posicao": "bottom-left",
       "cards": [
-        { "id": "n1", "label": "Quero Água", "texto": "Gostaria de beber um copo de água, por favor.", "tipo": "neutro", "icone": "🥤", "cor_custom": "#00ffaa" },
-        { "id": "n2", "label": "Ir ao Banheiro", "texto": "Preciso ir ao banheiro agora.", "tipo": "neutro", "icone": "🚻", "cor_custom": "#00ffaa" },
-        { "id": "n3", "label": "Com Fome", "texto": "Estou com fome, gostaria de lanchar.", "tipo": "neutro", "icone": "🥪", "cor_custom": "#00ffaa" },
-        { "id": "n4", "label": "Preciso de Ajuda", "texto": "Preciso de ajuda com esta tarefa.", "tipo": "alerta", "icone": "🙋", "cor_custom": "#00f0ff" }
+        { "id": "n1", "label": "Quero Água", "texto": "Gostaria de beber um copo de água, por favor.", "tipo": "neutro", "icone": "🥤", "cor_custom": "#00ffaa", "pictograma": "static/pictograms/n1_agua.png", "arasaac_id": "2276" },
+        { "id": "n2", "label": "Ir ao Banheiro", "texto": "Preciso ir ao banheiro agora.", "tipo": "neutro", "icone": "🚻", "cor_custom": "#00ffaa", "pictograma": "static/pictograms/n2_banheiro.png", "arasaac_id": "5921" },
+        { "id": "n3", "label": "Com Fome", "texto": "Estou com fome, gostaria de lanchar.", "tipo": "neutro", "icone": "🥪", "cor_custom": "#00ffaa", "pictograma": "static/pictograms/n3_fome.png", "arasaac_id": "6456" },
+        { "id": "n4", "label": "Preciso de Ajuda", "texto": "Preciso de ajuda com esta tarefa.", "tipo": "alerta", "icone": "🙋", "cor_custom": "#00f0ff", "pictograma": "static/pictograms/n4_ajuda.png", "arasaac_id": "32648" }
       ]
     },
     {
@@ -33,10 +33,10 @@
       "cor": "#00f0ff",
       "posicao": "top-right",
       "cards": [
-        { "id": "e1", "label": "Sim / Concordo", "texto": "Sim, estou de acordo.", "tipo": "sucesso", "icone": "✅", "cor_custom": "#00ffaa" },
-        { "id": "e2", "label": "Não / Recuso", "texto": "Não, prefiro não fazer isso agora.", "tipo": "urgente", "icone": "❌", "cor_custom": "#ff3366" },
-        { "id": "e3", "label": "Repetir por Favor", "texto": "Poderia repetir a explicação com calma, por favor?", "tipo": "neutro", "icone": "🔄", "cor_custom": "#00f0ff" },
-        { "id": "e4", "label": "Espere um Pouco", "texto": "Por favor, me dê mais alguns instantes para pensar.", "tipo": "alerta", "icone": "⏳", "cor_custom": "#00f0ff" }
+        { "id": "e1", "label": "Sim / Concordo", "texto": "Sim, estou de acordo.", "tipo": "sucesso", "icone": "✅", "cor_custom": "#00ffaa", "pictograma": "static/pictograms/e1_sim.png", "arasaac_id": "5584" },
+        { "id": "e2", "label": "Não / Recuso", "texto": "Não, prefiro não fazer isso agora.", "tipo": "urgente", "icone": "❌", "cor_custom": "#ff3366", "pictograma": "static/pictograms/e2_nao.png", "arasaac_id": "5526" },
+        { "id": "e3", "label": "Repetir por Favor", "texto": "Poderia repetir a explicação com calma, por favor?", "tipo": "neutro", "icone": "🔄", "cor_custom": "#00f0ff", "pictograma": "static/pictograms/e3_repetir.png", "arasaac_id": "11752" },
+        { "id": "e4", "label": "Espere um Pouco", "texto": "Por favor, me dê mais alguns instantes para pensar.", "tipo": "alerta", "icone": "⏳", "cor_custom": "#00f0ff", "pictograma": "static/pictograms/e4_esperar.png", "arasaac_id": "36914" }
       ]
     },
     {
@@ -46,10 +46,10 @@
       "cor": "#00f0ff",
       "posicao": "bottom-right",
       "cards": [
-        { "id": "c1", "label": "Guia de Respiração", "texto": "Iniciando exercício visual de respiração guiada para relaxamento.", "tipo": "calma", "icone": "🫁", "cor_custom": "#00f0ff" },
-        { "id": "c2", "label": "Ajuda Imediata", "texto": "Preciso de ajuda imediata do profissional agora.", "tipo": "urgente", "icone": "🚨", "cor_custom": "#ff3366" },
-        { "id": "c3", "label": "Mudar de Assunto", "texto": "Gostaria de mudar de atividade ou assunto agora.", "tipo": "neutro", "icone": "🔀", "cor_custom": "#00f0ff" },
-        { "id": "c4", "label": "Gostei Disso", "texto": "Gostei muito dessa atividade, quero continuar.", "tipo": "sucesso", "icone": "⭐", "cor_custom": "#00ffaa" }
+        { "id": "c1", "label": "Guia de Respiração", "texto": "Iniciando exercício visual de respiração guiada para relaxamento.", "tipo": "calma", "icone": "🫁", "cor_custom": "#00f0ff", "pictograma": "static/pictograms/c1_respirar.png", "arasaac_id": "34377" },
+        { "id": "c2", "label": "Ajuda Imediata", "texto": "Preciso de ajuda imediata do profissional agora.", "tipo": "urgente", "icone": "🚨", "cor_custom": "#ff3366", "pictograma": "static/pictograms/c2_urgente.png", "arasaac_id": "36675" },
+        { "id": "c3", "label": "Mudar de Assunto", "texto": "Gostaria de mudar de atividade ou assunto agora.", "tipo": "neutro", "icone": "🔀", "cor_custom": "#00f0ff", "pictograma": "static/pictograms/c3_mudar.png", "arasaac_id": "37360" },
+        { "id": "c4", "label": "Gostei Disso", "texto": "Gostei muito dessa atividade, quero continuar.", "tipo": "sucesso", "icone": "⭐", "cor_custom": "#00ffaa", "pictograma": "static/pictograms/c4_gostei.png", "arasaac_id": "37826" }
       ]
     }
   ]

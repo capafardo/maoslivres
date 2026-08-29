@@ -217,6 +217,19 @@
             transform: translateY(-2px);
         }
 
+        .hud-mode-btn {
+            border-color: #00ffaa !important;
+            background: rgba(0, 255, 170, 0.15) !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 12px rgba(0, 255, 170, 0.3) !important;
+            font-weight: 700;
+        }
+
+        .hud-mode-btn:hover {
+            background: rgba(0, 255, 170, 0.3) !important;
+            box-shadow: 0 0 20px rgba(0, 255, 170, 0.6) !important;
+        }
+
         /* 4. Decks Holográficos dos 4 Quadrantes */
         .holo-deck {
             position: absolute;
@@ -414,6 +427,51 @@
             line-height: 1.2;
         }
 
+        /* Estilos Especializados do Modo Pictogramas (ARASAAC / CAA) */
+        .holo-card.is-pictogram-mode {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            text-align: center;
+            min-height: 72px;
+        }
+
+        .holo-card.is-pictogram-mode .card-pic-wrapper {
+            width: 100%;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 3px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .holo-card.is-pictogram-mode:hover .card-pic-wrapper,
+        .holo-card.is-pictogram-mode.is-hovered .card-pic-wrapper {
+            transform: scale(1.04);
+            background: #ffffff;
+            box-shadow: 0 0 14px var(--card-accent, var(--primary-cyan));
+        }
+
+        .holo-card.is-pictogram-mode.is-active-trigger .card-pic-wrapper {
+            transform: scale(0.95);
+            background: #e6fff5;
+            box-shadow: 0 0 20px #00ffaa;
+        }
+
+        .card-pictogram-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
         /* 5. Feedback Pop-up Holográfico de Confirmação (Grande, Centralizado) */
         .confirmation-banner {
             position: fixed;
@@ -442,6 +500,19 @@
 
         .confirm-icon {
             font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-pictogram-img {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 4px;
+            box-shadow: 0 0 16px var(--primary-cyan-glow);
         }
 
         .confirm-details h3 {
@@ -455,6 +526,52 @@
             font-size: 0.95rem;
             color: var(--primary-cyan);
             margin-top: 2px;
+        }
+
+        .confirm-cooldown-bar {
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            border-radius: 6px;
+            height: 22px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 280px;
+        }
+
+        .cooldown-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, rgba(0, 240, 255, 0.6), rgba(0, 255, 170, 0.8));
+            transition: width 0.1s linear;
+        }
+
+        .cooldown-label {
+            position: relative;
+            z-index: 2;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: #ffffff;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Cartões em estado de cooldown */
+        body.selection-cooldown .holo-card {
+            filter: grayscale(0.15) brightness(0.9);
+            transition: filter 0.3s ease;
+        }
+
+        body.selection-cooldown .holo-card.is-hovered {
+            border-color: rgba(255, 183, 0, 0.6) !important;
+            box-shadow: 0 0 15px rgba(255, 183, 0, 0.3) !important;
         }
 
         /* 6. Modal de Respiração Guiada (Calming Mode) */
@@ -850,6 +967,16 @@
             border-radius: 12px;
         }
 
+        body.deck-size-large .holo-card.is-pictogram-mode {
+            min-height: 105px;
+            padding: 8px;
+        }
+
+        body.deck-size-large .holo-card.is-pictogram-mode .card-pic-wrapper {
+            height: 84px;
+            border-radius: 10px;
+        }
+
         body.deck-size-large .card-emoji {
             font-size: 1.85rem;
         }
@@ -936,13 +1063,17 @@
         </div>
 
         <div class="center-telemetry-pill">
-            <div class="tele-stat"><span>MODO:</span> <span class="tele-val" id="telemetryMode" style="color: var(--primary-cyan);">FULL</span></div>
+            <div class="tele-stat"><span>MODO:</span> <span class="tele-val" id="telemetryDisplayMode" style="color: var(--primary-emerald);">CAA/ARASAAC</span></div>
+            <div class="tele-stat"><span>HARDWARE:</span> <span class="tele-val" id="telemetryMode" style="color: var(--primary-cyan);">FULL</span></div>
             <div class="tele-stat"><span>GESTO:</span> <span class="tele-val" id="telemetryGesture">SEM MÃO</span></div>
             <div class="tele-stat"><span>PRECISÃO:</span> <span class="tele-val" id="telemetryConfidence">0%</span></div>
             <div class="tele-stat"><span>FPS:</span> <span class="tele-val" id="telemetryFPS">60</span></div>
         </div>
         
         <div class="hud-actions">
+            <button class="hud-btn hud-mode-btn" id="btnToggleMode" title="Alternar entre Modo Texto e Modo Pictogramas ARASAAC [M]">
+                <span id="icoMode">🖼️</span> <span id="lblMode">MODO CAA: PICTOGRAMAS [M]</span>
+            </button>
             <button class="hud-btn" id="btnToggleTracking">
                 <span>🖐️</span> <span id="lblTracking">TRACKING: ON</span>
             </button>
@@ -1043,6 +1174,10 @@
         <div class="confirm-details">
             <h3 id="confirmTitle">MANIFESTAÇÃO REGISTRADA</h3>
             <p id="confirmText">Estou me sentindo confortável no ambiente.</p>
+            <div class="confirm-cooldown-bar" id="confirmCooldownBar">
+                <div class="cooldown-progress" id="cooldownProgress"></div>
+                <span class="cooldown-label" id="cooldownLabel">🔒 Intervalo: 10s para próxima seleção</span>
+            </div>
         </div>
     </div>
 
@@ -1061,6 +1196,28 @@
             <button class="hud-btn" id="btnCloseDrawer">✕ FECHAR</button>
         </div>
         <div class="drawer-content">
+            <!-- Seção de Modo de Comunicação (CAA / Pictogramas vs Texto) -->
+            <div class="drawer-section" style="border-color: rgba(0, 240, 255, 0.4); background: rgba(0, 240, 255, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h3 style="color: #00f0ff; margin-bottom: 0;">MODO DE COMUNICAÇÃO (CAA)</h3>
+                    <span style="font-family: var(--font-mono); font-size: 0.70rem; color: #88c9df;">ATALHO [M]</span>
+                </div>
+                <div class="btn-size-group">
+                    <button class="btn-size-opt active" id="btnModePictograms">
+                        🖼️ PICTOGRAMAS (ARASAAC)
+                    </button>
+                    <button class="btn-size-opt" id="btnModeText">
+                        📝 TEXTO / PADRÃO
+                    </button>
+                </div>
+                <p style="font-size: 0.74rem; color: #b0e5f5; line-height: 1.35; margin-top: 8px;">
+                    <b>Modo Pictogramas:</b> Comunicação Aumentativa e Alternativa (CAA). Exibe os símbolos padronizados ARASAAC com alto contraste e sem texto, ideal para indivíduos não-verbais ou com sobrecarga cognitiva. A voz e os logs reproduzem a frase completa.
+                </p>
+                <div id="displayModeBadge" style="margin-top: 6px; font-family: var(--font-mono); font-size: 0.72rem; color: #00ffaa;">
+                    ● Modo Ativo: PICTOGRAMAS (ARASAAC Offline)
+                </div>
+            </div>
+
             <div class="drawer-section" style="border-color: rgba(0, 255, 170, 0.4); background: rgba(0, 255, 170, 0.05);">
                 <div class="toggle-container" style="margin-bottom: 8px;">
                     <h3 style="color: #00ffaa; margin-bottom: 0;">MODO ECO (COMPUTADORES BÁSICOS)</h3>
@@ -1078,13 +1235,32 @@
             </div>
 
             <div class="drawer-section">
-                <h3>Sensibilidade dos Gestos</h3>
+                <h3>Sensibilidade & Filtros de Gestos</h3>
                 <div class="slider-row">
+                    <label><span>Intervalo Pós-Seleção (Anti-Duplo Acionamento):</span> <span id="lblCooldown">10 seg</span></label>
+                    <input type="range" id="sliderCooldown" min="3" max="25" step="1" value="10">
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 0.70rem; color: #88c9df; margin-top: 4px; margin-bottom: 8px;">
+                    ✦ Aguarda 10 segundos antes de liberar um novo acionamento, evitando seleções acidentais.
+                </div>
+
+                <div class="toggle-container" style="margin-top: 10px; margin-bottom: 6px;">
+                    <span style="color: #00ffaa; font-weight: 600; font-size: 0.8rem;">FILTRAR PESSOAS AO FUNDO (FOCO NO ALUNO)</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="chkFilterMultiPerson" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <p style="font-size: 0.72rem; color: #b0e5f5; line-height: 1.35;">
+                    Prioriza a mão do aluno em primeiro plano (mais próxima da câmera e centralizada), descartando gestos de mediadores ou movimentações de fundo na sala.
+                </p>
+
+                <div class="slider-row" style="margin-top: 10px;">
                     <label><span>Sensibilidade da Pinça (Pinch):</span> <span id="lblPinch">Médio</span></label>
                     <input type="range" id="sliderPinch" min="0.03" max="0.09" step="0.01" value="0.055">
                 </div>
-                <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #00ffaa; margin-top: 6px;">
-                    ✦ Acionamento: Somente ao juntar polegar + indicador sobre o item.
+                <div style="font-family: var(--font-mono); font-size: 0.70rem; color: #00ffaa; margin-top: 4px;">
+                    ✦ Estabilização: Exige ~120ms de pinça estável para confirmar a intenção.
                 </div>
             </div>
 
@@ -1165,9 +1341,17 @@
             wasPinching: false,
             pinchDistance: 1.0,
             pinchThreshold: 0.055,
+            pinchHoldFrames: 0,
+            pinchRequiredFrames: 4, // Exige ~100-140ms de pinça contínua (anti-ruído)
             draggedDeck: null,
             dragOffset: { x: 0, y: 0 },
             triggeredElement: false,
+            selectionCooldownSec: 10, // Cooldown de 10 segundos
+            lastSelectionTime: 0,
+            cooldownRemaining: 0,
+            filterMultiPerson: true, // Filtro inteligente de mão em primeiro plano
+            primaryHandAnchor: null,
+            handLostFrames: 0,
             categories: [],
             sessionLogs: [],
             fps: 60,
@@ -1177,6 +1361,7 @@
             deckBlur: 16,
             ecoMode: false,
             deckSize: 'standard',
+            displayMode: 'pictogramas', // 'pictogramas' (CAA/ARASAAC) ou 'texto'
             showHudLog: true
         };
 
@@ -1189,10 +1374,10 @@
                     icone: "🧘",
                     cor: "#00f0ff",
                     cards: [
-                        { id: "s1", label: "Estou Confortável", texto: "Estou me sentindo confortável e bem no ambiente.", tipo: "sucesso", icone: "🟢" },
-                        { id: "s2", label: "Muito Barulho", texto: "O ambiente está muito barulhento, preciso de menos ruído.", tipo: "alerta", icone: "🔊" },
-                        { id: "s3", label: "Muita Luz", texto: "A iluminação está forte para mim, peço para diminuir a luz.", tipo: "alerta", icone: "💡" },
-                        { id: "s4", label: "Preciso de Pausa", texto: "Estou sobrecarregado, necessito de um momento de pausa.", tipo: "urgente", icone: "🛑" }
+                        { id: "s1", label: "Estou Confortável", texto: "Estou me sentindo confortável e bem no ambiente.", tipo: "sucesso", icone: "🟢", cor_custom: "#00ffaa", pictograma: "static/pictograms/s1_confortavel.png", arasaac_id: "31310" },
+                        { id: "s2", label: "Muito Barulho", texto: "O ambiente está muito barulhento, preciso de menos ruído.", tipo: "alerta", icone: "🔊", cor_custom: "#00f0ff", pictograma: "static/pictograms/s2_barulho.png", arasaac_id: "39871" },
+                        { id: "s3", label: "Muita Luz", texto: "A iluminação está forte para mim, peço para diminuir a luz.", tipo: "alerta", icone: "💡", cor_custom: "#00f0ff", pictograma: "static/pictograms/s3_muitaluz.png", arasaac_id: "8619" },
+                        { id: "s4", label: "Preciso de Pausa", texto: "Estou sobrecarregado, necessito de um momento de pausa.", tipo: "urgente", icone: "🛑", cor_custom: "#ff3366", pictograma: "static/pictograms/s4_pausa.png", arasaac_id: "7196" }
                     ]
                 },
                 {
@@ -1201,10 +1386,10 @@
                     icone: "💧",
                     cor: "#00ffaa",
                     cards: [
-                        { id: "n1", label: "Quero Água", texto: "Gostaria de beber um copo de água, por favor.", tipo: "neutro", icone: "🥤" },
-                        { id: "n2", label: "Ir ao Banheiro", texto: "Preciso ir ao banheiro agora.", tipo: "neutro", icone: "🚻" },
-                        { id: "n3", label: "Com Fome", texto: "Estou com fome, gostaria de lanchar.", tipo: "neutro", icone: "🥪" },
-                        { id: "n4", label: "Preciso de Ajuda", texto: "Preciso de ajuda com esta tarefa.", tipo: "alerta", icone: "🙋" }
+                        { id: "n1", label: "Quero Água", texto: "Gostaria de beber um copo de água, por favor.", tipo: "neutro", icone: "🥤", cor_custom: "#00ffaa", pictograma: "static/pictograms/n1_agua.png", arasaac_id: "2276" },
+                        { id: "n2", label: "Ir ao Banheiro", texto: "Preciso ir ao banheiro agora.", tipo: "neutro", icone: "🚻", cor_custom: "#00ffaa", pictograma: "static/pictograms/n2_banheiro.png", arasaac_id: "5921" },
+                        { id: "n3", label: "Com Fome", texto: "Estou com fome, gostaria de lanchar.", tipo: "neutro", icone: "🥪", cor_custom: "#00ffaa", pictograma: "static/pictograms/n3_fome.png", arasaac_id: "6456" },
+                        { id: "n4", label: "Preciso de Ajuda", texto: "Preciso de ajuda com esta tarefa.", tipo: "alerta", icone: "🙋", cor_custom: "#00f0ff", pictograma: "static/pictograms/n4_ajuda.png", arasaac_id: "32648" }
                     ]
                 },
                 {
@@ -1213,10 +1398,10 @@
                     icone: "⚡",
                     cor: "#00f0ff",
                     cards: [
-                        { id: "e1", label: "Sim / Concordo", texto: "Sim, estou de acordo.", tipo: "sucesso", icone: "✅", cor_custom: "#00ffaa" },
-                        { id: "e2", label: "Não / Recuso", texto: "Não, prefiro não fazer isso agora.", tipo: "urgente", icone: "❌", cor_custom: "#ff3366" },
-                        { id: "e3", label: "Repetir por Favor", texto: "Poderia repetir a explicação com calma, por favor?", tipo: "neutro", icone: "🔄", cor_custom: "#00f0ff" },
-                        { id: "e4", label: "Espere um Pouco", texto: "Por favor, me dê mais alguns instantes para pensar.", tipo: "alerta", icone: "⏳", cor_custom: "#00f0ff" }
+                        { id: "e1", label: "Sim / Concordo", texto: "Sim, estou de acordo.", tipo: "sucesso", icone: "✅", cor_custom: "#00ffaa", pictograma: "static/pictograms/e1_sim.png", arasaac_id: "5584" },
+                        { id: "e2", label: "Não / Recuso", texto: "Não, prefiro não fazer isso agora.", tipo: "urgente", icone: "❌", cor_custom: "#ff3366", pictograma: "static/pictograms/e2_nao.png", arasaac_id: "5526" },
+                        { id: "e3", label: "Repetir por Favor", texto: "Poderia repetir a explicação com calma, por favor?", tipo: "neutro", icone: "🔄", cor_custom: "#00f0ff", pictograma: "static/pictograms/e3_repetir.png", arasaac_id: "11752" },
+                        { id: "e4", label: "Espere um Pouco", texto: "Por favor, me dê mais alguns instantes para pensar.", tipo: "alerta", icone: "⏳", cor_custom: "#00f0ff", pictograma: "static/pictograms/e4_esperar.png", arasaac_id: "36914" }
                     ]
                 },
                 {
@@ -1225,10 +1410,10 @@
                     icone: "🌀",
                     cor: "#00f0ff",
                     cards: [
-                        { id: "c1", label: "Guia de Respiração", texto: "Iniciando exercício visual de respiração guiada para relaxamento.", tipo: "calma", icone: "🫁", cor_custom: "#00f0ff" },
-                        { id: "c2", label: "Ajuda Imediata", texto: "Preciso de ajuda imediata do profissional agora.", tipo: "urgente", icone: "🚨", cor_custom: "#ff3366" },
-                        { id: "c3", label: "Mudar de Assunto", texto: "Gostaria de mudar de atividade ou assunto agora.", tipo: "neutro", icone: "🔀", cor_custom: "#00f0ff" },
-                        { id: "c4", label: "Gostei Disso", texto: "Gostei muito dessa atividade, quero continuar.", tipo: "sucesso", icone: "⭐", cor_custom: "#00ffaa" }
+                        { id: "c1", label: "Guia de Respiração", texto: "Iniciando exercício visual de respiração guiada para relaxamento.", tipo: "calma", icone: "🫁", cor_custom: "#00f0ff", pictograma: "static/pictograms/c1_respirar.png", arasaac_id: "34377" },
+                        { id: "c2", label: "Ajuda Imediata", texto: "Preciso de ajuda imediata do profissional agora.", tipo: "urgente", icone: "🚨", cor_custom: "#ff3366", pictograma: "static/pictograms/c2_urgente.png", arasaac_id: "36675" },
+                        { id: "c3", label: "Mudar de Assunto", texto: "Gostaria de mudar de atividade ou assunto agora.", tipo: "neutro", icone: "🔀", cor_custom: "#00f0ff", pictograma: "static/pictograms/c3_mudar.png", arasaac_id: "37360" },
+                        { id: "c4", label: "Gostei Disso", texto: "Gostei muito dessa atividade, quero continuar.", tipo: "sucesso", icone: "⭐", cor_custom: "#00ffaa", pictograma: "static/pictograms/c4_gostei.png", arasaac_id: "37826" }
                     ]
                 }
             ]
@@ -1317,6 +1502,8 @@
                 calmaria: document.getElementById('gridCalmaria')
             };
 
+            const isPicMode = State.displayMode === 'pictogramas';
+
             State.categories.forEach(cat => {
                 const container = gridMap[cat.id];
                 if (!container) return;
@@ -1324,7 +1511,7 @@
 
                 cat.cards.forEach(card => {
                     const div = document.createElement('div');
-                    div.className = 'holo-card interactive-target';
+                    div.className = `holo-card interactive-target ${isPicMode ? 'is-pictogram-mode' : ''}`;
                     div.dataset.action = 'card';
                     div.dataset.id = card.id;
                     div.dataset.label = card.label;
@@ -1334,13 +1521,22 @@
                     const cardAccent = card.cor_custom || (card.id === 'e1' ? '#00ffaa' : (card.id === 'e2' ? '#ff3366' : cat.cor));
                     div.style.setProperty('--card-accent', cardAccent);
 
-                    div.innerHTML = `
-                        <div class="card-top">
-                            <span class="card-emoji">${card.icone}</span>
-                            <div class="card-title">${card.label}</div>
-                        </div>
-                        <div class="card-description">${card.texto}</div>
-                    `;
+                    if (isPicMode) {
+                        const picSrc = card.pictograma || '';
+                        div.innerHTML = `
+                            <div class="card-pic-wrapper" title="${card.label}">
+                                ${picSrc ? `<img src="${picSrc}" alt="${card.label}" class="card-pictogram-img" onerror="this.parentElement.innerHTML='<span style=\\'font-size:1.8rem\\'>${card.icone || '💬'}</span>'">` : `<span style="font-size:1.8rem">${card.icone || '💬'}</span>`}
+                            </div>
+                        `;
+                    } else {
+                        div.innerHTML = `
+                            <div class="card-top">
+                                <span class="card-emoji">${card.icone || '💬'}</span>
+                                <div class="card-title">${card.label}</div>
+                            </div>
+                            <div class="card-description">${card.texto}</div>
+                        `;
+                    }
 
                     div.onclick = () => acionarCard(card, cat.nome);
                     container.appendChild(div);
@@ -1348,8 +1544,45 @@
             });
         }
 
+        // AUXILIARES DE COOLDOWN (ANTI-DUPLO ACIONAMENTO)
+        function isSelectionCooldownActive() {
+            if (!State.lastSelectionTime) return false;
+            const elapsed = (Date.now() - State.lastSelectionTime) / 1000;
+            return elapsed < State.selectionCooldownSec;
+        }
+
+        function getCooldownRemaining() {
+            if (!State.lastSelectionTime) return 0;
+            const elapsed = (Date.now() - State.lastSelectionTime) / 1000;
+            return Math.max(0, Math.ceil(State.selectionCooldownSec - elapsed));
+        }
+
+        function atualizarCooldownUI(secondsLeft) {
+            const cooldownBar = document.getElementById('confirmCooldownBar');
+            const cooldownProg = document.getElementById('cooldownProgress');
+            const cooldownLbl = document.getElementById('cooldownLabel');
+
+            if (!cooldownBar || !cooldownProg || !cooldownLbl) return;
+
+            if (secondsLeft > 0) {
+                cooldownBar.style.display = 'flex';
+                const percent = (secondsLeft / State.selectionCooldownSec) * 100;
+                cooldownProg.style.width = `${percent}%`;
+                cooldownLbl.textContent = `🔒 Intervalo: ${secondsLeft}s para próxima seleção`;
+            } else {
+                cooldownProg.style.width = '0%';
+                cooldownLbl.textContent = `✓ Pronto para nova seleção`;
+            }
+        }
+
         // ACIONAMENTO DE UM CARTÃO
         async function acionarCard(card, categoriaNome) {
+            if (isSelectionCooldownActive()) {
+                console.log(`[COOLDOWN] Seleção bloqueada. Restam ${getCooldownRemaining()}s`);
+                return;
+            }
+
+            State.lastSelectionTime = Date.now();
             AudioFX.playSuccessChime();
             falarTexto(card.texto);
 
@@ -1360,15 +1593,26 @@
 
             // Banner Holográfico Central
             const banner = document.getElementById('confirmBanner');
-            document.getElementById('confirmIcon').textContent = card.icone || '💬';
+            const confirmIconEl = document.getElementById('confirmIcon');
+            
+            const picSrc = card.pictograma ? card.pictograma.replace(/^\//, '') : '';
+            if (picSrc && (State.displayMode === 'pictogramas' || card.pictograma)) {
+                confirmIconEl.innerHTML = `<img src="${picSrc}" alt="${card.label}" class="confirm-pictogram-img" onerror="this.parentElement.innerHTML='${card.icone || '💬'}'">`;
+            } else {
+                confirmIconEl.innerHTML = '';
+                confirmIconEl.textContent = card.icone || '💬';
+            }
+
             document.getElementById('confirmTitle').textContent = card.label.toUpperCase();
             document.getElementById('confirmText').textContent = `"${card.texto}"`;
             banner.classList.add('active');
 
+            atualizarCooldownUI(State.selectionCooldownSec);
+
             clearTimeout(window.bannerTimeout);
             window.bannerTimeout = setTimeout(() => {
                 banner.classList.remove('active');
-            }, 3500);
+            }, Math.max(5000, State.selectionCooldownSec * 1000));
 
             // Registrar Log da Sessão
             const logEntry = {
@@ -1377,6 +1621,7 @@
                 texto: card.texto,
                 categoria: categoriaNome,
                 icone: card.icone,
+                pictograma: card.pictograma,
                 timestamp: new Date().toLocaleTimeString('pt-BR'),
                 origem: State.cursor.active ? "gesto_pinça" : "clique"
             };
@@ -1384,7 +1629,7 @@
             adicionarLogVisual(logEntry);
 
             try {
-                await fetch('/api/log', {
+                await fetch('/api/logs', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(logEntry)
@@ -1401,8 +1646,11 @@
             
             const item = document.createElement('div');
             item.className = 'log-item';
+            const iconContent = log.pictograma 
+                ? `<img src="${log.pictograma.replace(/^\//, '')}" alt="${log.label}" style="width:20px; height:20px; object-fit:contain; vertical-align:middle; background:#fff; border-radius:4px; padding:1px; margin-right:4px;" onerror="this.outerHTML='${log.icone || '💬'}'">` 
+                : `${log.icone || '💬'} `;
             item.innerHTML = `
-                <span>${log.icone} <b>${log.label}</b></span>
+                <span>${iconContent}<b>${log.label}</b></span>
                 <span style="color:#88c9df;">${log.timestamp}</span>
             `;
             list.prepend(item);
@@ -1415,7 +1663,7 @@
                 entry.innerHTML = `
                     <span class="term-time">${log.timestamp}</span>
                     <span class="term-cat">${(log.categoria || 'GERAL').toUpperCase()}</span>
-                    <span class="term-label">${log.icone} ${log.label}</span>
+                    <span class="term-label">${log.icone || '💬'} ${log.label}</span>
                     <span class="term-msg">"${log.texto}"</span>
                 `;
                 terminal.prepend(entry);
@@ -1423,7 +1671,7 @@
         }
 
         // =========================================================================
-        // VISÃO COMPUTACIONAL: MEDIAPIPE HANDS + BAREHANDS AR
+        // VISÃO COMPUTACIONAL: MEDIAPIPE HANDS + FILTRAGEM INTELIGENTE DE MÃOS
         // =========================================================================
         const videoElement = document.getElementById('webcam');
         const canvasElement = document.getElementById('hudCanvas');
@@ -1445,20 +1693,105 @@
             [0,17]                         // Palma
         ];
 
+        // ALGORITMO DE FILTRAGEM: IDENTIFICA A MÃO DO ALUNO EM PRIMEIRO PLANO E IGNORA FUNDO
+        function selecionarMaoPrincipal(multiLandmarks) {
+            if (!multiLandmarks || multiLandmarks.length === 0) {
+                State.handLostFrames++;
+                if (State.handLostFrames > 25) {
+                    State.primaryHandAnchor = null;
+                }
+                return null;
+            }
+
+            if (!State.filterMultiPerson) {
+                return multiLandmarks[0];
+            }
+
+            let bestHand = null;
+            let bestScore = -99999;
+
+            multiLandmarks.forEach((landmarks) => {
+                const wrist = landmarks[0];
+                const middleTip = landmarks[12];
+
+                // 1. Escala / Proximidade da mão (mãos ao fundo da sala têm span minúsculo)
+                const dx = middleTip.x - wrist.x;
+                const dy = middleTip.y - wrist.y;
+                const span = Math.sqrt(dx * dx + dy * dy);
+
+                // Se a mão for muito pequena (< 0.08 da tela), descarta (movimentações distantes ao fundo)
+                if (span < 0.08) return;
+
+                // 2. Centralidade: O aluno em atendimento senta-se no centro da webcam
+                const palmCenterX = (landmarks[0].x + landmarks[5].x + landmarks[17].x) / 3;
+                const palmCenterY = (landmarks[0].y + landmarks[5].y + landmarks[17].y) / 3;
+                const distFromScreenCenter = Math.abs(palmCenterX - 0.5);
+
+                // 3. Continuidade Temporal (Trava suave na mão do aluno):
+                let temporalBonus = 0;
+                if (State.primaryHandAnchor) {
+                    const distFromAnchor = Math.hypot(palmCenterX - State.primaryHandAnchor.x, palmCenterY - State.primaryHandAnchor.y);
+                    if (distFromAnchor < 0.28) {
+                        temporalBonus = (1 - distFromAnchor / 0.28) * 3.0; // Bônus alto para manter a mesma mão
+                    }
+                }
+
+                // Pontuação final: proximidade (tamanho) + centralidade + estabilidade temporal
+                const score = (span * 3.5) - (distFromScreenCenter * 0.9) + temporalBonus;
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestHand = {
+                        landmarks,
+                        centerX: palmCenterX,
+                        centerY: palmCenterY,
+                        span
+                    };
+                }
+            });
+
+            if (bestHand) {
+                State.primaryHandAnchor = { x: bestHand.centerX, y: bestHand.centerY };
+                State.handLostFrames = 0;
+                return bestHand.landmarks;
+            } else {
+                State.handLostFrames++;
+                if (State.handLostFrames > 25) {
+                    State.primaryHandAnchor = null;
+                }
+                return null;
+            }
+        }
+
         function onResults(results) {
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            // Atualização do status de cooldown
+            const cooldownRemaining = getCooldownRemaining();
+            State.cooldownRemaining = cooldownRemaining;
+            const inCooldown = cooldownRemaining > 0;
+            document.body.classList.toggle('selection-cooldown', inCooldown);
+
+            // Atualiza barra de cooldown no banner
+            atualizarCooldownUI(cooldownRemaining);
 
             // Cálculo de FPS
             const now = performance.now();
             const delta = (now - State.lastFrameTime) / 1000;
             State.lastFrameTime = now;
             State.fps = Math.round(1 / delta) || 60;
-            document.getElementById('telemetryFPS').textContent = State.fps;
+            const fpsEl = document.getElementById('telemetryFPS');
+            if (fpsEl) fpsEl.textContent = State.fps;
 
-            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0 && State.trackingEnabled) {
+            // Filtro da mão do aluno principal
+            const primaryLandmarks = (results.multiHandLandmarks && State.trackingEnabled) 
+                ? selecionarMaoPrincipal(results.multiHandLandmarks) 
+                : null;
+
+            if (primaryLandmarks) {
                 State.handsDetected = true;
-                const landmarks = results.multiHandLandmarks[0];
+                const landmarks = primaryLandmarks;
 
                 const thumbTip = landmarks[4];
                 const indexTip = landmarks[8];
@@ -1477,50 +1810,77 @@
                 const dy = (thumbTip.y - indexTip.y);
                 const pinchDist = Math.sqrt(dx*dx + dy*dy);
                 State.pinchDistance = pinchDist;
+                
+                // Estabilização de Pinça (Exige ~120ms contínuos para evitar acionamentos acidentais)
+                const isInstantPinch = pinchDist < State.pinchThreshold;
+                if (isInstantPinch) {
+                    State.pinchHoldFrames++;
+                } else {
+                    State.pinchHoldFrames = 0;
+                }
+
+                const isStablePinch = State.pinchHoldFrames >= State.pinchRequiredFrames;
                 const wasPinching = State.isPinching;
-                State.isPinching = pinchDist < State.pinchThreshold;
+                State.isPinching = isStablePinch;
                 State.wasPinching = wasPinching;
 
                 // Processar Interação Touchless
                 processarInteracaoTouchless(State.cursor.x, State.cursor.y, State.isPinching, wasPinching);
 
-                // Telemetria
-                document.getElementById('telemetryConfidence').textContent = `${Math.round((1 - indexTip.z) * 100)}%`;
+                // Telemetria com verificações de segurança
+                const confEl = document.getElementById('telemetryConfidence');
+                if (confEl) confEl.textContent = `${Math.round((1 - (indexTip.z || 0)) * 100)}%`;
+                
                 const isHovering = document.querySelector('.is-hovered') !== null;
-                document.getElementById('telemetryGesture').textContent = State.isPinching ? "PINÇA (ATIVADO)" : (isHovering ? "MIRA (PINÇA P/ SELECIONAR)" : "APONTANDO");
-                document.getElementById('telemetryGesture').style.color = State.isPinching ? "#00ffaa" : (isHovering ? "#00f0ff" : "#88c9df");
+                const gestEl = document.getElementById('telemetryGesture');
+                if (gestEl) {
+                    if (inCooldown) {
+                        gestEl.textContent = `🔒 INTERVALO (${cooldownRemaining}s)`;
+                        gestEl.style.color = "#ffb700";
+                    } else {
+                        gestEl.textContent = State.isPinching ? "PINÇA (ATIVADO)" : (isHovering ? "MIRA (PINÇA P/ SELECIONAR)" : "APONTANDO");
+                        gestEl.style.color = State.isPinching ? "#00ffaa" : (isHovering ? "#00f0ff" : "#88c9df");
+                    }
+                }
 
                 // Desenhar Esqueleto Holográfico da Mão
-                desenharMaoHolografica(landmarks, State.isPinching);
+                desenharMaoHolografica(landmarks, State.isPinching, inCooldown);
 
             } else {
                 State.handsDetected = false;
                 State.cursor.active = false;
                 State.isPinching = false;
                 State.wasPinching = false;
+                State.pinchHoldFrames = 0;
                 State.draggedDeck = null;
                 State.triggeredElement = false;
-                document.getElementById('telemetryGesture').textContent = "SEM MÃO";
-                document.getElementById('telemetryGesture').style.color = "#888";
+                const gestEl = document.getElementById('telemetryGesture');
+                if (gestEl) {
+                    gestEl.textContent = "SEM MÃO";
+                    gestEl.style.color = "#888";
+                }
             }
 
             // Desenhar Retícula / Cursor do Indicador
             if (State.cursor.active) {
-                desenharCursorHolografico(State.cursor.x, State.cursor.y, State.isPinching);
+                desenharCursorHolografico(State.cursor.x, State.cursor.y, State.isPinching, inCooldown, cooldownRemaining);
             }
 
             canvasCtx.restore();
         }
 
-        function desenharMaoHolografica(landmarks, isPinching) {
+        function desenharMaoHolografica(landmarks, isPinching, inCooldown = false) {
             const w = canvasElement.width;
             const h = canvasElement.height;
 
             canvasCtx.lineWidth = 2;
-            canvasCtx.strokeStyle = isPinching ? 'rgba(0, 255, 170, 0.85)' : 'rgba(0, 240, 255, 0.7)';
+            const strokeColor = inCooldown 
+                ? 'rgba(255, 183, 0, 0.75)' 
+                : (isPinching ? 'rgba(0, 255, 170, 0.85)' : 'rgba(0, 240, 255, 0.7)');
+            canvasCtx.strokeStyle = strokeColor;
             
             if (!State.ecoMode) {
-                canvasCtx.shadowColor = isPinching ? '#00ffaa' : '#00f0ff';
+                canvasCtx.shadowColor = inCooldown ? '#ffb700' : (isPinching ? '#00ffaa' : '#00f0ff');
                 canvasCtx.shadowBlur = 10;
             } else {
                 canvasCtx.shadowBlur = 0;
@@ -1543,7 +1903,7 @@
 
                 canvasCtx.beginPath();
                 canvasCtx.arc(px, py, radius, 0, Math.PI * 2);
-                canvasCtx.fillStyle = isFingertip ? (isPinching ? '#00ffaa' : '#ffffff') : 'rgba(0, 240, 255, 0.85)';
+                canvasCtx.fillStyle = isFingertip ? (inCooldown ? '#ffb700' : (isPinching ? '#00ffaa' : '#ffffff')) : 'rgba(0, 240, 255, 0.85)';
                 canvasCtx.fill();
             });
 
@@ -1557,36 +1917,53 @@
 
                 canvasCtx.beginPath();
                 canvasCtx.arc(mx, my, 18, 0, Math.PI * 2);
-                canvasCtx.strokeStyle = '#00ffaa';
+                canvasCtx.strokeStyle = inCooldown ? '#ffb700' : '#00ffaa';
                 canvasCtx.lineWidth = 3;
                 canvasCtx.stroke();
             }
         }
 
-        function desenharCursorHolografico(x, y, isPinching) {
+        function desenharCursorHolografico(x, y, isPinching, inCooldown = false, cooldownRemaining = 0) {
             canvasCtx.save();
             if (!State.ecoMode) {
-                canvasCtx.shadowColor = isPinching ? '#00ffaa' : '#00f0ff';
+                canvasCtx.shadowColor = inCooldown ? '#ffb700' : (isPinching ? '#00ffaa' : '#00f0ff');
                 canvasCtx.shadowBlur = 15;
             } else {
                 canvasCtx.shadowBlur = 0;
             }
 
+            const mainColor = inCooldown ? '#ffb700' : (isPinching ? '#00ffaa' : '#00f0ff');
+
             // Retícula circular externa
-            canvasCtx.strokeStyle = isPinching ? '#00ffaa' : '#00f0ff';
+            canvasCtx.strokeStyle = mainColor;
             canvasCtx.lineWidth = isPinching ? 3 : 2;
             canvasCtx.beginPath();
             canvasCtx.arc(x, y, isPinching ? 18 : 14, 0, Math.PI * 2);
             canvasCtx.stroke();
 
             // Ponto central
-            canvasCtx.fillStyle = isPinching ? '#00ffaa' : '#ffffff';
+            canvasCtx.fillStyle = inCooldown ? '#ffb700' : (isPinching ? '#00ffaa' : '#ffffff');
             canvasCtx.beginPath();
             canvasCtx.arc(x, y, 3, 0, Math.PI * 2);
             canvasCtx.fill();
 
+            // Arco de progresso do Cooldown ao redor do cursor
+            if (inCooldown && cooldownRemaining > 0) {
+                const ratio = cooldownRemaining / State.selectionCooldownSec;
+                canvasCtx.beginPath();
+                canvasCtx.arc(x, y, 22, -Math.PI / 2, (-Math.PI / 2) + (Math.PI * 2 * ratio));
+                canvasCtx.strokeStyle = '#ffb700';
+                canvasCtx.lineWidth = 3;
+                canvasCtx.stroke();
+
+                // Texto do contador junto ao cursor
+                canvasCtx.font = "bold 11px 'Share Tech Mono', monospace";
+                canvasCtx.fillStyle = "#ffb700";
+                canvasCtx.fillText(`${cooldownRemaining}s`, x + 26, y + 4);
+            }
+
             // Pulso ao pinçar
-            if (isPinching) {
+            if (isPinching && !inCooldown) {
                 canvasCtx.strokeStyle = 'rgba(0, 255, 170, 0.8)';
                 canvasCtx.lineWidth = 2;
                 canvasCtx.beginPath();
@@ -1599,6 +1976,7 @@
 
         // PROCESSAMENTO DE GESTOS E INTERAÇÃO COM ELEMENTOS DOS 4 QUADRANTES
         function processarInteracaoTouchless(x, y, isPinching, wasPinching) {
+            const inCooldown = isSelectionCooldownActive();
             const element = document.elementFromPoint(x, y);
             const targetCard = element ? element.closest('.interactive-target, .hud-btn') : null;
             const targetHeader = element ? element.closest('.deck-header') : null;
@@ -1613,6 +1991,14 @@
 
             if (justPinched) {
                 if (targetCard) {
+                    const isCard = targetCard.dataset.action === 'card';
+                    
+                    // Se for um cartão e estiver em cooldown, não aciona
+                    if (isCard && inCooldown) {
+                        AudioFX.playHoloBeep(260, 'sine', 0.08); // Feedback sonoro sutil de bloqueio
+                        return;
+                    }
+
                     // 1. Aciona o cartão ou botão
                     targetCard.click();
                     targetCard.classList.add('is-active-trigger');
@@ -1660,10 +2046,10 @@
         });
 
         hands.setOptions({
-            maxNumHands: 1,
+            maxNumHands: 2, // Permite detectar mãos do ambiente para nosso algoritmo selecionar com precisão a do aluno
             modelComplexity: 1,
-            minDetectionConfidence: 0.6,
-            minTrackingConfidence: 0.6
+            minDetectionConfidence: 0.65,
+            minTrackingConfidence: 0.65
         });
 
         hands.onResults(onResults);
@@ -1776,6 +2162,7 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'p' || e.key === 'P') toggleDrawer();
+            if (e.key === 'm' || e.key === 'M') aplicarModoExibicao(State.displayMode === 'pictogramas' ? 'texto' : 'pictogramas');
             if (e.key === 'l' || e.key === 'L') aplicarVisibilidadeHudLog(!State.showHudLog);
             if (e.key === 'Escape') {
                 drawerPanel.classList.remove('open');
@@ -1783,17 +2170,63 @@
             }
         });
 
+        // Alternância de Modo de Comunicação (CAA / Pictogramas ARASAAC vs Texto)
+        function aplicarModoExibicao(modo) {
+            State.displayMode = modo;
+            const isPic = modo === 'pictogramas';
+            document.body.classList.toggle('mode-pictogramas', isPic);
+
+            // Botão do Top HUD
+            const lblMode = document.getElementById('lblMode');
+            const icoMode = document.getElementById('icoMode');
+            if (lblMode && icoMode) {
+                lblMode.textContent = isPic ? "MODO CAA: PICTOGRAMAS [M]" : "MODO: TEXTO [M]";
+                icoMode.textContent = isPic ? "🖼️" : "📝";
+            }
+
+            // Telemetria no Topo
+            const teleDisplay = document.getElementById('telemetryDisplayMode');
+            if (teleDisplay) {
+                teleDisplay.textContent = isPic ? "CAA/ARASAAC" : "TEXTO/HUD";
+                teleDisplay.style.color = isPic ? "var(--primary-emerald)" : "var(--primary-cyan)";
+            }
+
+            // Botões do Painel do Profissional
+            const btnPic = document.getElementById('btnModePictograms');
+            const btnTxt = document.getElementById('btnModeText');
+            if (btnPic && btnTxt) {
+                btnPic.classList.toggle('active', isPic);
+                btnTxt.classList.toggle('active', !isPic);
+            }
+
+            // Badge descritivo no Painel
+            const badge = document.getElementById('displayModeBadge');
+            if (badge) {
+                badge.textContent = isPic ? "● Modo Ativo: PICTOGRAMAS (ARASAAC Offline)" : "● Modo Ativo: TEXTO (Títulos e Frases Visíveis)";
+                badge.style.color = isPic ? "#00ffaa" : "#88c9df";
+            }
+
+            localStorage.setItem('cetam_display_mode', modo);
+            renderizarDecks();
+        }
+
+        document.getElementById('btnToggleMode').onclick = () => {
+            aplicarModoExibicao(State.displayMode === 'pictogramas' ? 'texto' : 'pictogramas');
+        };
+        document.getElementById('btnModePictograms').onclick = () => aplicarModoExibicao('pictogramas');
+        document.getElementById('btnModeText').onclick = () => aplicarModoExibicao('texto');
+
         // Controles do Profissional
         function aplicarModoEco(ativo) {
             State.ecoMode = ativo;
             document.body.classList.toggle('eco-mode-active', State.ecoMode);
 
-            // Reconfigura o modelo MediaPipe Hands dinamicamente
+            // Reconfigura o modelo MediaPipe Hands dinamicamente mantendo 2 mãos para seleção inteligente
             hands.setOptions({
-                maxNumHands: 1,
+                maxNumHands: 2,
                 modelComplexity: State.ecoMode ? 0 : 1, // 0 = Lite (Rápido), 1 = Full (Alta Precisão)
-                minDetectionConfidence: State.ecoMode ? 0.5 : 0.6,
-                minTrackingConfidence: State.ecoMode ? 0.5 : 0.6
+                minDetectionConfidence: State.ecoMode ? 0.55 : 0.65,
+                minTrackingConfidence: State.ecoMode ? 0.55 : 0.65
             });
 
             // Atualiza indicador na Topbar
@@ -1840,6 +2273,20 @@
             aplicarOpacidade(State.deckOpacity, State.deckBlur);
             document.getElementById('lblBlur').textContent = `${val}px`;
             localStorage.setItem('jarvis_deck_blur', val);
+        };
+
+        // Cooldown pós-seleção
+        document.getElementById('sliderCooldown').oninput = (e) => {
+            const val = parseInt(e.target.value);
+            State.selectionCooldownSec = val;
+            document.getElementById('lblCooldown').textContent = `${val} seg`;
+            localStorage.setItem('cetam_cooldown_sec', val);
+        };
+
+        // Filtro Multi-Pessoas
+        document.getElementById('chkFilterMultiPerson').onchange = (e) => {
+            State.filterMultiPerson = e.target.checked;
+            localStorage.setItem('cetam_filter_multi_person', State.filterMultiPerson);
         };
 
         // Acessibilidade: Tamanho dos Decks (Padrão vs Ampliado +40%)
@@ -1932,6 +2379,31 @@
 
         // Inicialização com restauração de configurações salvas
         function inicializarPreferencias() {
+            // Restaura Modo de Comunicação (CAA Pictogramas vs Texto)
+            const savedDisplayMode = localStorage.getItem('cetam_display_mode');
+            if (savedDisplayMode !== null) {
+                State.displayMode = savedDisplayMode;
+            }
+            aplicarModoExibicao(State.displayMode);
+
+            // Restaura Cooldown
+            const savedCooldown = localStorage.getItem('cetam_cooldown_sec');
+            if (savedCooldown !== null) {
+                State.selectionCooldownSec = parseInt(savedCooldown);
+                const slider = document.getElementById('sliderCooldown');
+                if (slider) slider.value = State.selectionCooldownSec;
+                const lbl = document.getElementById('lblCooldown');
+                if (lbl) lbl.textContent = `${State.selectionCooldownSec} seg`;
+            }
+
+            // Restaura Filtro Multi-Pessoas
+            const savedFilter = localStorage.getItem('cetam_filter_multi_person');
+            if (savedFilter !== null) {
+                State.filterMultiPerson = savedFilter === 'true';
+                const chk = document.getElementById('chkFilterMultiPerson');
+                if (chk) chk.checked = State.filterMultiPerson;
+            }
+
             // Restaura Modo Eco
             const savedEco = localStorage.getItem('cetam_eco_mode');
             if (savedEco !== null) {
