@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>cetam lab tea - 4-Quadrant Holographic HUD</title>
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Fontes Locais (Operação 100% Offline / Intranet) -->
+    <link rel="stylesheet" href="/static/fonts/fonts.css">
 
-    <!-- MediaPipe Hands & Camera Utils -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <!-- MediaPipe Hands & Camera Utils Locais (Operação 100% Offline / Intranet) -->
+    <script src="/static/vendor/mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="/static/vendor/mediapipe/hands/hands.js"></script>
 
     <style>
         :root {
@@ -2042,7 +2040,7 @@
         // INICIALIZAÇÃO DA CÂMERA E MEDIAPIPE
         // =========================================================================
         const hands = new Hands({
-            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+            locateFile: (file) => `/static/vendor/mediapipe/hands/${file}`
         });
 
         hands.setOptions({

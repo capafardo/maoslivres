@@ -9,6 +9,7 @@ Curso Técnico em Manutenção e Suporte em Informática / Laboratório de Apoio
 import sys
 import os
 import json
+import socket
 import webbrowser
 from datetime import datetime
 from typing import List, Optional
@@ -174,9 +175,35 @@ async def get_reference_image():
     raise HTTPException(status_code=404, detail="Imagem não encontrada")
 
 
-def run(host: str = "0.0.0.0", port: int = 8000, open_browser: bool = True):
+def is_port_in_use(port: int, host: str = "0.0.0.0") -> bool:
+    """Verifica se uma porta de rede já está ocupada no host."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind((host, port))
+            return False
+        except OSError:
+            return True
+
+def find_available_port(start_port: int = 8080, max_attempts: int = 50, host: str = "0.0.0.0") -> int:
+    """Busca sequencialmente a próxima porta TCP disponível."""
+    for p in range(start_port, start_port + max_attempts):
+        if not is_port_in_use(p, host):
+            return p
+    return start_port
+
+
+def run(host: str = "0.0.0.0", port: int = 8080, open_browser: bool = True):
+    if is_port_in_use(port, host):
+        nova_porta = find_available_port(start_port=port, host=host)
+        print("!" * 70)
+        print(f"⚠️  RESILIÊNCIA: A porta {port} já está em uso por outro serviço!")
+        print(f"🔄 Redirecionando automaticamente para a porta livre: {nova_porta}")
+        print("!" * 70)
+        port = nova_porta
+
     print("=" * 70)
-    print("🚀 cetam lab tea (MVP)")
+    print("🚀 cetam lab tea (100% Offline / Intranet)")
     print("   Laboratório de Informática / Acessibilidade Touchless")
     print(f"   Servidor rodando em: http://localhost:{port}")
     print(f"   Acesse na rede local em: http://0.0.0.0:{port}")
@@ -193,7 +220,7 @@ def run(host: str = "0.0.0.0", port: int = 8000, open_browser: bool = True):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Executar servidor cetam lab tea")
-    parser.add_argument("--port", type=int, default=8000, help="Porta HTTP (padrão: 8000)")
+    parser.add_argument("--port", type=int, default=8080, help="Porta HTTP (padrão: 8080)")
     parser.add_argument("--no-browser", action="store_true", help="Não abrir o navegador automaticamente")
     args = parser.parse_args()
     

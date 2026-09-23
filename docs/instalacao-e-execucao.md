@@ -42,12 +42,22 @@ python3 app.py
 ```
 
 Acesse no navegador:
-* Local: `http://localhost:8000`
-* Na rede local da sala: `http://<IP_DO_COMPUTADOR>:8000`
+* Local: `http://localhost:8080`
+* Na rede local da sala: `http://<IP_DO_COMPUTADOR>:8080`
 
 ---
 
-## Operação em Rede Local Fechada (Sem Acesso à Web)
+## Operação em Rede Local Fechada (100% Offline / Sem Internet)
 
-* Todos os pictogramas ARASAAC estão armazenados localmente em `static/pictograms/`.
-* O backend serve tanto a interface quanto as imagens e a persistência de logs de forma autônoma.
+O sistema foi arquitetado para funcionar de forma plena em ambientes de intranet e redes educacionais ou clínicas isoladas:
+* **MediaPipe Hands & Camera Utils Locais**: Todos os scripts JS, binários WebAssembly (`.wasm`), modelos neurais TFLite (`hand_landmark_full.tflite` e `hand_landmark_lite.tflite`) e pacotes de assets empacotados (`.data`, `.binarypb`) estão localizados em `static/vendor/mediapipe/`.
+* **Fontes Embutidas**: As famílias *Orbitron*, *Rajdhani* e *Share Tech Mono* estão localizadas em `static/fonts/` com CSS próprio, dispensando qualquer chamada aos servidores do Google Fonts.
+* **Pictogramas ARASAAC Locais**: Os 16 pictogramas de CAA estão armazenados localmente em `static/pictograms/`.
+* **Sons Holográficos Nativos**: Todos os beeps e efeitos de feedback utilizam a Web Audio API sintetizada pelo navegador (sem download de áudios externos).
+
+### Verificação de Prontidão Offline
+Para validar que todos os assets locais estão integrados e prontos para uso desconectado:
+```bash
+python3 test_offline_readiness.py
+```
+Esse teste simula todas as rotas e confirma que nenhum recurso faz requisição para a internet externa.

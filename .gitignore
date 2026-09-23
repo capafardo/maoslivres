@@ -1,10 +1,44 @@
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-.DS_Store
-.vscode/
-logs_sessao.json
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ambientes Virtuais
 .venv/
 venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Logs e Dados Locais de Sessão
+*.log
+logs_sessao.json
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentos e Anotações de Uso Interno
 uso-interno/
-uso-interno

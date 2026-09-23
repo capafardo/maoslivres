@@ -38,7 +38,7 @@ O **CETAM LAB TEA** é composto por uma arquitetura cliente-servidor leve, conce
 │                                                             │
 │  - /api/cards  (Leitura/Gravação de Cartões)                │
 │  - /api/logs   (Registro e Histórico de Manifestações)      │
-│  - /static     (Catálogo de Imagens ARASAAC Offline)        │
+│  - /static     (Vendor MediaPipe WASM/TFLite, Fontes e CAA) │
 └─────────────────────────────────────────────────────────────┘
 ```
 
